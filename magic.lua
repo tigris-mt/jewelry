@@ -22,12 +22,12 @@ tigris.jewelry.register("tigris_jewelry:solar_shield_amulet", {
     image = "tigris_jewelry_amulet.png^tigris_jewelry_solar_shield.png",
     group = "amulet",
 
-    -- Immune to sun.
     absorb = {"sun"},
-    armor = {sun = 0},
+    armor = {sun = 0, heat = 0.75},
 
-    -- At damage every ~5 seconds, 720 uses will give 1 hour of sunwalking.
+    -- At damage every ~5 seconds, 720 uses will give 1 hour of sunwalking assuming no other damage.
     uses = 720,
+    wear_on_all = true,
 })
 
 minetest.register_craft{
@@ -44,6 +44,7 @@ tigris.jewelry.register("tigris_jewelry:speed_anklet", {
     group = "anklet",
 
     effects = {speed = 1.5, jump = 1.1},
+    wear_on_all = true,
 })
 
 minetest.register_craft{
@@ -58,7 +59,9 @@ tigris.jewelry.register("tigris_jewelry:mana_boost_bracelet", {
     description = "Bracelet of Mana Boost",
     image = "tigris_jewelry_bracelet.png^tigris_magic_mana_icon.png",
     group = "bracelet",
+
     mana = {max = 1.3, regen = 1.5},
+    wear_on_all = true,
 })
 
 minetest.register_craft{

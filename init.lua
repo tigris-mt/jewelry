@@ -67,9 +67,9 @@ end
 local old = tigris.damage.player_damage_callback
 tigris.damage.player_damage_callback = function(player, damage, blame)
     local g = table.copy(damage.groups)
-    local refresh = false
     local list = player:get_inventory():get_list("jewelry")
-    for _,v in ipairs(list) do
+    local wear = {}
+    for i,v in ipairs(list) do
         if v:get_count() > 0 then
             local r = m.registered[v:get_name()]
             local match = false
@@ -80,10 +80,7 @@ tigris.damage.player_damage_callback = function(player, damage, blame)
                 end
             end
             if match then
-                v:add_wear(65535 / r.uses)
-                if v:get_count() == 0 then
-                    refresh = true
-                end
+                wear[i] = 65535 / r.uses
             end
         end
     end
@@ -94,7 +91,7 @@ tigris.damage.player_damage_callback = function(player, damage, blame)
         break
     end
 
-    for _,v in ipairs(list) do
+    for i,v in ipairs(list) do
         if v:get_count() > 0 then
             local r = m.registered[v:get_name()]
             local match = (r.wear_on_all and g_has)
@@ -104,17 +101,16 @@ tigris.damage.player_damage_callback = function(player, damage, blame)
                 end
             end
             if match then
-                v:add_wear(65535 / r.uses)
-                if v:get_count() == 0 then
-                    refresh = true
-                end
+                wear[i] = 65535 / r.uses
             end
         end
     end
-    player:get_inventory():set_list("jewelry", list)
-    if refresh then
-        m.refresh(player)
+
+    for i,v in pairs(wear) do
+        list[i]:add_wear(v)
     end
+    player:get_inventory():set_list("jewelry", list)
+    m.refresh(player)
     return old(player, damage, blame)
 end
 
