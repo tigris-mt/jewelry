@@ -2,7 +2,7 @@ local m = {
     registered = {},
     actions = {},
 }
-tigris.jewelry = m
+jewelry = m
 
 m.groups = {
     amulet = {
@@ -34,7 +34,7 @@ local form = smartfs.create("Jewelry", function(state)
     state:element("code", {name = "listring", code = "listring[current_player;jewelry]listring[current_player;main]"})
 end)
 
-smartfs.add_to_inventory(form, "tigris_jewelry_anklet.png", "Jewelry")
+smartfs.add_to_inventory(form, "jewelry_anklet.png", "Jewelry")
 
 minetest.register_chatcommand("jewelry", {
     description = "Open your jewelry inventory",
@@ -170,7 +170,7 @@ function m.register(name, d)
 
     minetest.register_tool(rname, {
         description = d.description,
-        groups = {tigris_jewelry = 1, ["tigris_jewelry_" .. d.group] = 1},
+        groups = {jewelry = 1, ["jewelry_" .. d.group] = 1},
         inventory_image = d.image,
     })
 end
@@ -181,7 +181,3 @@ end
 
 tigris.include("base.lua")
 tigris.include("actions.lua")
-
-if minetest.get_modpath("tigris_magic") then
-    tigris.include("magic.lua")
-end

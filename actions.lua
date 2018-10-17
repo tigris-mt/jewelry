@@ -1,4 +1,4 @@
-tigris.jewelry.register_action("armor", {
+jewelry.register_action("armor", {
     init = function(state)
         state.armor = {}
     end,
@@ -10,11 +10,11 @@ tigris.jewelry.register_action("armor", {
     end,
 
     apply = function(state, player)
-        armor_monoid.monoid:add_change(player, state.armor, "tigris_jewelry:armor")
+        armor_monoid.monoid:add_change(player, state.armor, "jewelry:armor")
     end,
 })
 
-tigris.jewelry.register_action("effects", {
+jewelry.register_action("effects", {
     init = function(state)
         state.effects = {
             speed = 1,
@@ -31,8 +31,8 @@ tigris.jewelry.register_action("effects", {
     end,
 
     apply = function(state, player)
-        player_monoids.gravity:add_change(player, state.effects.gravity, "tigris_jewelry:gravity")
-        player_monoids.speed:add_change(player, state.effects.speed, "tigris_jewelry:speed")
-        player_monoids.jump:add_change(player, state.effects.jump, "tigris_jewelry:jump")
+        player_monoids.gravity:add_change(player, state.effects.gravity, "jewelry:gravity")
+        player_monoids.speed:add_change(player, state.effects.speed, "jewelry:speed")
+        player_monoids.jump:add_change(player, state.effects.jump, "jewelry:jump")
     end,
 })
