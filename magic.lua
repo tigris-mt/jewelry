@@ -1,3 +1,22 @@
+tigris.jewelry.register_action("mana", {
+    init = function(state)
+        state.mana = {
+            regen = 1,
+            max = 1,
+        }
+    end,
+    add = function(state, r)
+        for k,v in pairs(r.mana or {}) do
+            assert(state.mana[k])
+            state.mana[k] = state.mana[k] * v
+        end
+    end,
+    apply = function(state, player)
+        tigris.magic.mana_regen_monoid:add_change(player, state.mana.regen, "tigris_jewelry:mana_regen")
+        tigris.magic.mana_max_monoid:add_change(player, state.mana.max, "tigris_jewelry:mana_max")
+    end,
+})
+
 tigris.jewelry.register("tigris_jewelry:solar_shield_amulet", {
     description = "Amulet of Solar Shield",
     image = "tigris_jewelry_amulet.png^tigris_jewelry_solar_shield.png",

@@ -1,5 +1,6 @@
 local m = {
     registered = {},
+    actions = {},
 }
 tigris.jewelry = m
 
@@ -44,44 +45,23 @@ minetest.register_chatcommand("jewelry", {
 
 function m.refresh(player)
     local list = player:get_inventory():get_list("jewelry")
-    local armor = {}
-    local mana = {
-        regen = 1,
-        max = 1,
-    }
-    local effects = {
-        gravity = 1,
-        speed = 1,
-        jump = 1,
-    }
+    local state = {}
+    for k,v in pairs(m.actions) do
+        v.init(state)
+    end
     for _,v in ipairs(list) do
         if v:get_count() > 0 then
             local r = m.registered[v:get_name()]
-            for k,v in pairs(r.armor) do
-                armor[k] = (armor[k] or 1) * v
-            end
 
-            for k,v in pairs(r.effects) do
-                effects[k] = effects[k] * v
-            end
-
-            for k,v in pairs(r.mana) do
-                mana[k] = mana[k] * v
+            for k,v in pairs(m.actions) do
+                v.add(state, r)
             end
         end
     end
 
-    -- Apply armor.
-    armor_monoid.monoid:add_change(player, armor, "tigris_jewelry:armor")
-
-    -- Apply mana.
-    tigris.magic.mana_regen_monoid:add_change(player, mana.regen, "tigris_jewelry:mana_regen")
-    tigris.magic.mana_max_monoid:add_change(player, mana.max, "tigris_jewelry:mana_max")
-
-    -- Apply effects.
-    player_monoids.gravity:add_change(player, effects.gravity, "tigris_jewelry:gravity")
-    player_monoids.speed:add_change(player, effects.speed, "tigris_jewelry:speed")
-    player_monoids.jump:add_change(player, effects.jump, "tigris_jewelry:jump")
+    for k,v in pairs(m.actions) do
+        v.apply(state, player)
+    end
 end
 
 local old = tigris.damage.player_damage_callback
@@ -187,10 +167,6 @@ function m.register(name, d)
     name = name:gsub("^:", "")
     m.registered[name] = d
 
-    d.armor = d.armor or {}
-    d.mana = d.mana or {}
-    d.effects = d.effects or {}
-
     d.uses = d.uses or 300
     d.absorb = d.absorb or {}
     d.wear_on_all = d.wear_on_all or false
@@ -203,7 +179,12 @@ function m.register(name, d)
     })
 end
 
+function m.register_action(name, d)
+    m.actions[name] = d
+end
+
 tigris.include("base.lua")
+tigris.include("actions.lua")
 
 if minetest.get_modpath("tigris_magic") then
     tigris.include("magic.lua")
