@@ -64,58 +64,82 @@ function m.refresh(player)
     end
 end
 
-local old = tigris.damage.player_damage_callback
-tigris.damage.player_damage_callback = function(player, damage, blame)
-    local g = table.copy(damage.groups)
-    local list = player:get_inventory():get_list("jewelry")
-    local wear = {}
-    for i,v in ipairs(list) do
-        if v:get_count() > 0 then
-            local r = m.registered[v:get_name()]
-            local match = false
-            for _,v in ipairs(r.absorb) do
-                if damage.groups[v] and damage.groups[v] > 0 then
-                    g[v] = nil
-                    match = true
+local die_uses = tonumber(minetest.settings:get("jewelry.die_uses")) or 25
+if minetest.settings:get_bool("jewelry.damage", true) then
+    local old = tigris.damage.player_damage_callback
+    tigris.damage.player_damage_callback = function(player, damage, blame)
+        local g = table.copy(damage.groups)
+        local list = player:get_inventory():get_list("jewelry")
+        local wear = {}
+        for i,v in ipairs(list) do
+            if v:get_count() > 0 then
+                local r = m.registered[v:get_name()]
+                local match = false
+                for _,v in ipairs(r.absorb) do
+                    if damage.groups[v] and damage.groups[v] > 0 then
+                        g[v] = nil
+                        match = true
+                    end
+                end
+                if match then
+                    wear[i] = 65535 / r.uses
                 end
             end
-            if match then
-                wear[i] = 65535 / r.uses
-            end
         end
-    end
 
-    local g_has = false
-    for k in pairs(g) do
-        g_has = true
-        break
-    end
+        local g_has = false
+        for k in pairs(g) do
+            g_has = true
+            break
+        end
 
-    for i,v in ipairs(list) do
-        if v:get_count() > 0 then
-            local r = m.registered[v:get_name()]
-            local match = (r.wear_on_all and g_has)
-            for _,v in ipairs(r.wear_on) do
-                if g[v] and g[v] > 0 then
-                    match = true
+        for i,v in ipairs(list) do
+            if v:get_count() > 0 then
+                local r = m.registered[v:get_name()]
+                local match = (r.wear_on_all and g_has)
+                for _,v in ipairs(r.wear_on) do
+                    if g[v] and g[v] > 0 then
+                        match = true
+                    end
+                end
+                if match then
+                    wear[i] = 65535 / r.uses
                 end
             end
-            if match then
-                wear[i] = 65535 / r.uses
-            end
         end
+
+        for i,v in pairs(wear) do
+            list[i]:add_wear(v)
+        end
+        player:get_inventory():set_list("jewelry", list)
+        m.refresh(player)
+        return old(player, damage, blame)
     end
 
-    for i,v in pairs(wear) do
-        list[i]:add_wear(v)
-    end
-    player:get_inventory():set_list("jewelry", list)
-    m.refresh(player)
-    return old(player, damage, blame)
+    minetest.register_on_dieplayer(function(player)
+        local list = player:get_inventory():get_list("jewelry")
+        for i,v in ipairs(list) do
+            local r = m.registered[v:get_name()]
+            if r then
+                v:add_wear(65535 / r.uses * die_uses)
+            end
+        end
+        player:get_inventory():set_list("jewelry", list)
+    end)
 end
 
 minetest.register_on_joinplayer(function(player)
     player:get_inventory():set_size("jewelry", m.slots)
+
+    -- Clear out unknown jewelry.
+    local list = player:get_inventory():get_list("jewelry")
+    for i,v in ipairs(list) do
+        if not m.registered[v:get_name()] then
+            v:set_count(0)
+        end
+    end
+    player:get_inventory():set_list("jewelry", list)
+
     m.refresh(player)
 end)
 
