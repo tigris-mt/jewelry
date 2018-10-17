@@ -198,6 +198,8 @@ function m.register(name, d)
         description = d.description,
         groups = {jewelry = 1, ["jewelry_" .. d.group] = 1},
         inventory_image = d.image,
+        _doc_items_longdesc = d.longdesc,
+        _doc_items_durability = (not d.base) and d.uses or nil,
     })
 end
 
