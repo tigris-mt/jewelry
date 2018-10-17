@@ -23,7 +23,7 @@ for k,v in pairs(m.groups) do
     m.slots = m.slots + v.max
 end
 
-local form = smartfs.create("Jewelry", function(state)
+local form = smartfs.create("jewelry", function(state)
     state:size(8, 6)
 
     state:inventory(0, 0, 8, 2, "jewelry")
