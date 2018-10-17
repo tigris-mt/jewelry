@@ -42,6 +42,7 @@ end)
 
 -- Add to inventories.
 smartfs.add_to_inventory(form, "jewelry_anklet.png", "Jewelry")
+tigris.smartfs_sfinv(form, "jewelry:jewelry", "Jewelry")
 
 -- And fallback chatcommand.
 minetest.register_chatcommand("jewelry", {
