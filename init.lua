@@ -45,6 +45,10 @@ minetest.register_chatcommand("jewelry", {
 function m.refresh(player)
     local list = player:get_inventory():get_list("jewelry")
     local armor = {}
+    local mana = {
+        regen = 1,
+        max = 1,
+    }
     local effects = {
         gravity = 1,
         speed = 1,
@@ -60,11 +64,19 @@ function m.refresh(player)
             for k,v in pairs(r.effects) do
                 effects[k] = effects[k] * v
             end
+
+            for k,v in pairs(r.mana) do
+                mana[k] = mana[k] * v
+            end
         end
     end
 
     -- Apply armor.
     armor_monoid.monoid:add_change(player, armor, "tigris_jewelry:armor")
+
+    -- Apply mana.
+    tigris.magic.mana_regen_monoid:add_change(player, mana.regen, "tigris_jewelry:mana_regen")
+    tigris.magic.mana_max_monoid:add_change(player, mana.max, "tigris_jewelry:mana_max")
 
     -- Apply effects.
     player_monoids.gravity:add_change(player, effects.gravity, "tigris_jewelry:gravity")
@@ -176,7 +188,9 @@ function m.register(name, d)
     m.registered[name] = d
 
     d.armor = d.armor or {}
+    d.mana = d.mana or {}
     d.effects = d.effects or {}
+
     d.uses = d.uses or 300
     d.absorb = d.absorb or {}
     d.wear_on_all = d.wear_on_all or false
