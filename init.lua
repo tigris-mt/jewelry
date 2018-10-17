@@ -161,14 +161,16 @@ end)
 function m.register(name, d)
     local rname = name
     name = name:gsub("^:", "")
-    m.registered[name] = d
+    if not d.base then
+        m.registered[name] = d
+    end
 
     d.uses = d.uses or 300
     d.absorb = d.absorb or {}
     d.wear_on_all = d.wear_on_all or false
     d.wear_on = d.wear_on or {}
 
-    minetest.register_tool(rname, {
+    (d.base and minetest.register_craftitem or minetest.register_tool)(rname, {
         description = d.description,
         groups = {jewelry = 1, ["jewelry_" .. d.group] = 1},
         inventory_image = d.image,
