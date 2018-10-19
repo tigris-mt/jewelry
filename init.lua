@@ -45,7 +45,7 @@ local form = smartfs.create("jewelry", function(state)
 end)
 
 -- Add to inventories.
-smartfs.add_to_inventory(form, "jewelry_anklet.png", "Jewelry")
+smartfs.add_to_inventory(form, "jewelry_anklet.png", "Jewelry", true)
 
 -- And fallback chatcommand.
 minetest.register_chatcommand("jewelry", {
