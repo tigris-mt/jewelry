@@ -21,7 +21,7 @@ m.groups = {
         max = 2,
     },
 
-    eyes = {
+    glasses = {
         max = 1,
     },
 }
