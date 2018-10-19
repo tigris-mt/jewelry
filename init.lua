@@ -22,7 +22,7 @@ m.groups = {
     },
 
     eyes = {
-        max = 2,
+        max = 1,
     },
 }
 
