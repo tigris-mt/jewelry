@@ -19,29 +19,46 @@ jewelry.register("jewelry:anklet_base", {
     base = true,
 })
 
+jewelry.register("jewelry:glasses_base", {
+    description = "Glasses Base",
+    image = "jewelry_glasses.png",
+    group = "glasses",
+    base = true,
+})
+
+local steel = "default:steel_ingot"
+
 minetest.register_craft{
     output = "jewelry:amulet_base",
     recipe = {
-        {"default:steel_ingot", "", "default:steel_ingot"},
-        {"", "default:steel_ingot", ""},
-        {"", "default:steel_ingot", ""},
+        {steel, "", steel},
+        {"", steel, ""},
+        {"", steel, ""},
     },
 }
 
 minetest.register_craft{
     output = "jewelry:bracelet_base",
     recipe = {
-        {"default:steel_ingot", "", "default:steel_ingot"},
+        {steel, "", steel},
         {"", "", ""},
-        {"default:steel_ingot", "", "default:steel_ingot"},
+        {steel, "", steel},
     },
 }
 
 minetest.register_craft{
     output = "jewelry:anklet_base",
     recipe = {
-        {"", "default:steel_ingot", ""},
-        {"default:steel_ingot", "", "default:steel_ingot"},
-        {"", "default:steel_ingot", ""},
+        {"", steel, ""},
+        {steel, "", steel},
+        {"", steel, ""},
+    },
+}
+
+minetest.register_craft{
+    output = "jewelry:glasses_base",
+    recipe = {
+        {steel, "", steel},
+        {"default:glass", steel, "default:glass"},
     },
 }

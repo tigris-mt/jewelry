@@ -20,6 +20,10 @@ m.groups = {
     anklet = {
         max = 2,
     },
+
+    eyes = {
+        max = 2,
+    },
 }
 
 -- Sum up the total slots.
